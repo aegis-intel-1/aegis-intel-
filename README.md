@@ -1,5 +1,7 @@
 # Aegis Intel
 
+![Aegis workspace](docs/screenshots/overview.png)
+
 Independent investigation workspace rebuilt from the previous pilot's recorded design and capability inventory. The original workspace could not be recovered. This is a reconstruction, not a byte-identical recovery of the previous commit.
 
 ## Local setup
@@ -7,7 +9,7 @@ Independent investigation workspace rebuilt from the previous pilot's recorded d
 Requires Node 24 or later.
 
 ```sh
-npm install
+npm ci
 npm run browser:install
 cp .env.example .env
 npm run dev
@@ -25,7 +27,7 @@ Shadow and Nexus remain separate and unchanged. No original project credentials 
 
 ## Reconstruction verification
 
-The source is being saved directly through the GitHub connection because the execution environment is unavailable. Automated verification results will be recorded after CI runs. Earlier test results from the previous pilot do not validate this reconstruction.
+The source is saved in this repository. [GitHub Actions verification](https://github.com/aegis-intel-1/aegis-intel-/actions/runs/41781422669) passed the production build, nine backend tests, four browser scenarios, companion syntax checks and dependency audit. Earlier v0.1 test results are not used as evidence for this reconstruction.
 
 ## Verification and scope
 

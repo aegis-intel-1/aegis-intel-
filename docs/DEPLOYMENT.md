@@ -4,7 +4,7 @@
 
 Install Node 24+. Download this repository using GitHub's green Code button, Download ZIP, and extract it. Open a terminal in the extracted folder.
 
-Run npm install, npm run browser:install, and copy .env.example to .env. On Windows PowerShell use Copy-Item .env.example .env; on macOS/Linux use cp .env.example .env. Run npm run dev and open http://localhost:5173.
+Run npm ci, npm run browser:install, and copy .env.example to .env. On Windows PowerShell use Copy-Item .env.example .env; on macOS/Linux use cp .env.example .env. Run npm run dev and open http://localhost:5173.
 
 Development uses demo.sqlite, with a clearly labeled fictional case. User queries and imported files are real. Do not expose demo mode to the internet.
 
