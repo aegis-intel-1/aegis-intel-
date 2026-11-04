@@ -1,0 +1,2 @@
+import {defineConfig} from '@playwright/test';
+export default defineConfig({testDir:'tests/browser',fullyParallel:false,workers:1,timeout:45000,use:{baseURL:'http://localhost:4312',headless:true,trace:'retain-on-failure'},webServer:{command:'node server/index.js',url:'http://localhost:4312/api/health',reuseExistingServer:false,env:{AEGIS_DEMO:'true',NODE_ENV:'test',HOST:'0.0.0.0',PORT:'4312',APP_URL:'http://localhost:4312',DATA_DIR:'/tmp/aegis-browser-tests'}}});

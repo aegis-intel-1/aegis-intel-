@@ -1,0 +1,20 @@
+services:
+  aegis:
+    build: .
+    init: true
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      NODE_ENV: production
+      AEGIS_DEMO: 'false'
+      HOST: 0.0.0.0
+      PORT: 4310
+      DATA_DIR: /data
+      TRUST_PROXY: '1'
+    ports:
+      - '127.0.0.1:4310:4310'
+    volumes:
+      - evidence:/data
+    shm_size: 1gb
+volumes:
+  evidence:
