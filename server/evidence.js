@@ -1,6 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
-import archiver from 'archiver';
+import {ZipArchive} from 'archiver';
 import {PDFDocument,StandardFonts,rgb} from 'pdf-lib';
 import {dataDir,id,now,sha,run,all,audit,requireCase} from './db.js';
 export const originals=path.join(dataDir,'originals');
@@ -39,7 +39,7 @@ export async function bundle(owner,caseId,res){
  const approvals=all('SELECT id,approval FROM jobs WHERE case_id=? AND approval IS NOT NULL',caseId);
  const pdf=await report(owner,caseId);
  res.setHeader('Content-Type','application/zip');res.setHeader('Content-Disposition','attachment; filename="aegis-'+caseId+'.zip"');
- const zip=archiver('zip',{zlib:{level:6}});zip.on('error',()=>res.destroy());zip.pipe(res);
+ const zip=new ZipArchive({zlib:{level:6}});zip.on('error',()=>res.destroy());zip.pipe(res);
  for(const a of artifacts)zip.file(originalPath(a.id),{name:'originals/'+a.id});
  zip.append(JSON.stringify({version:1,case:c,artifacts,custody:events,approvals,limitations:['System timestamps only','Local case hash chain; no external anchoring','Rendered captures may omit lazy-loaded content']},null,2),{name:'manifest.json'});
  zip.append(pdf,{name:'report.pdf'});

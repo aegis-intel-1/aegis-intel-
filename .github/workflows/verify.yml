@@ -1,0 +1,57 @@
+name: Verify reconstruction
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+      - run: npm ci
+      - run: npm run check
+      - run: node --check extension/background.js && node --check extension/popup.js
+      - run: npx playwright install --with-deps chromium
+      - run: npm run test:e2e
+      - name: Dependency audit
+        run: npm audit --audit-level=moderate
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: verification-results
+          path: |
+            test-results/
+            package-lock.json
+
+  records:
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+    needs: verify
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: verification-results
+          path: qa
+      - uses: actions/github-script@v8
+        with:
+          script: |
+            const fs = require('fs');
+            const base = context.payload.pull_request.head.sha;
+            const repository = {owner: context.repo.owner, repo: context.repo.repo};
+            const commit = await github.rest.git.getCommit({...repository, commit_sha: base});
+            const entries = [];
+            for (const [source, destination] of [['qa/package-lock.json','package-lock.json'],['qa/test-results/overview.png','docs/screenshots/overview.png']]) {
+              if (!fs.existsSync(source)) throw new Error('Missing verification artifact: ' + source);
+              const blob = await github.rest.git.createBlob({...repository, content: fs.readFileSync(source).toString('base64'), encoding: 'base64'});
+              entries.push({path: destination, mode: '100644', type: 'blob', sha: blob.data.sha});
+            }
+            const record = {sourceCommit: base, runId: context.runId, verifiedAt: new Date().toISOString(), checks: ['production build','9 backend tests','4 browser scenarios','extension syntax','dependency audit']};
+            entries.push({path:'docs/verification.json',mode:'100644',type:'blob',content:JSON.stringify(record,null,2)});
+            const tree = await github.rest.git.createTree({...repository, base_tree:commit.data.tree.sha, tree:entries});
+            const snapshot = await github.rest.git.createCommit({...repository,message:'Record verified dependencies and interface screenshot',tree:tree.data.sha,parents:[base]});
+            await github.rest.git.createRef({...repository,ref:'refs/heads/qa/run-'+context.runId,sha:snapshot.data.sha});

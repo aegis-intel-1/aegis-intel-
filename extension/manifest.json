@@ -1,0 +1,28 @@
+{
+  "manifest_version": 3,
+  "name": "Aegis Intel Browser Companion",
+  "version": "0.2.0",
+  "description": "Explicit investigator-session PNG and MHTML preservation.",
+  "permissions": [
+    "activeTab",
+    "tabs",
+    "scripting",
+    "storage",
+    "debugger",
+    "pageCapture"
+  ],
+  "optional_host_permissions": [
+    "https://*/*",
+    "http://*/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Aegis Intel"
+  },
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self'"
+  }
+}

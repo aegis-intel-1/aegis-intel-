@@ -67,7 +67,7 @@ export async function capture(owner,caseId,url){
   await context.routeWebSocket('**/*',socket=>socket.close());
   await context.route('**/*',async route=>{
    const req=route.request();if(!['GET','HEAD'].includes(req.method()))return route.abort();
-   try{const r=await safeFetch(req.url(),{maxBytes:15*1024*1024});const headers={};for(const k of ['content-type','content-encoding'])if(r.headers[k])headers[k]=String(r.headers[k]);await route.fulfill({status:r.status,headers,body:r.body});}
+   try{const r=await safeFetch(req.url(),{maxBytes:15*1024*1024});if(req.isNavigationRequest()&&r.url!==publicURL(req.url()).href)throw new Error('Navigation redirected; discover the final URL first');const headers={};for(const k of ['content-type','content-encoding'])if(r.headers[k])headers[k]=String(r.headers[k]);await route.fulfill({status:r.status,headers,body:r.body});}
    catch{await route.abort();}
   });
   const page=await context.newPage();await page.goto(normalized,{waitUntil:'domcontentloaded',timeout:45000});
