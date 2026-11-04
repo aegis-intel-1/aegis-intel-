@@ -26,3 +26,14 @@ Shadow and Nexus remain separate and unchanged. No original project credentials 
 ## Reconstruction verification
 
 The source is being saved directly through the GitHub connection because the execution environment is unavailable. Automated verification results will be recorded after CI runs. Earlier test results from the previous pilot do not validate this reconstruction.
+
+## Verification and scope
+
+Run `npm run check` and `npm run test:e2e` after installing Chromium. GitHub Actions runs the production frontend build, nine backend tests, four browser scenarios and a dependency audit.
+
+- [Full three-source capability map](docs/CAPABILITIES.md)
+- [PC setup, Docker deployment and Chrome companion](docs/DEPLOYMENT.md)
+- [Commercial launch work](docs/LAUNCH.md)
+- [Reconstruction validation record](docs/VALIDATION.md)
+
+The companion supports explicit active-page PNG/MHTML capture, visible link/date inventory and optional bounded comment expansion. It does not promise complete Facebook histories or all comments. Public screenshots are limited to 50,000 pixels. System time and local custody hashes are not trusted timestamping or external signatures.

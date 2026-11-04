@@ -25,7 +25,7 @@ export async function safeFetch(value,{maxBytes=8*1024*1024,redirects=5,headers=
   const req=transport.request(target,{
    method:'GET',servername:host,
    agent:proxy?new HttpsProxyAgent(proxy):undefined,
-   lookup:(_hostname,_options,cb)=>cb(null,address.address,address.family),
+   lookup:(_hostname,options,cb)=>options.all?cb(null,[address]):cb(null,address.address,address.family),
    headers:{'user-agent':'AegisIntel/0.2 (investigator collection)','accept-encoding':'identity',...headers,host:url.host}
   },res=>{
    let size=0;const chunks=[];
